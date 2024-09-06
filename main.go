@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
@@ -14,7 +16,12 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 
 func clipView(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Displa a specific clip..."))
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+	fmt.Fprintf(w, "Display a specific clip with ID %d...", id)
 }
 
 func clipCreate(w http.ResponseWriter, r *http.Request) {
