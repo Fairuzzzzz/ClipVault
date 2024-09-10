@@ -14,14 +14,14 @@ import (
 type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
-	vaults   *models.VaultModel
+	clips    *models.ClipModel
 }
 
 func main() {
 	// Command-line flag
 	addr := flag.String("addr", ":4000", "HTTP network address")
 
-	dsn := flag.String("dsn", "host=localhost user=web password=password dbname=clipvault sslmode=disable", "PostgreSQL data source name")
+	dsn := flag.String("dsn", "host=localhost user=web2 password=testweb dbname=clipvault sslmode=disable", "PostgreSQL data source name")
 
 	flag.Parse()
 
@@ -42,7 +42,7 @@ func main() {
 	app := &application{
 		errorLog: errorLog,
 		infoLog:  infoLog,
-		vaults:   &models.VaultModel{DB: db},
+		clips:    &models.ClipModel{DB: db},
 	}
 
 	// Initialize a http.Server struct

@@ -46,5 +46,15 @@ func (app *application) clipCreate(w http.ResponseWriter, r *http.Request) {
 		app.clientError(w, http.StatusMethodNotAllowed)
 		return
 	}
-	w.Write([]byte("Create a new clip..."))
+
+	title := "O snail"
+	content := "0 snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n- Kobayashi Issa"
+	expires := 7
+
+	id, err := app.clips.Insert(title, content, expires)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+	http.Redirect(w, r, fmt.Sprintf("/clip/view?id=%d", id), http.StatusSeeOther)
 }

@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-// Define a Vault type to hold the data for an individual vault
-type Vault struct {
+// Define a CLip type to hold the data for an individual clip
+type Clip struct {
 	ID      int
 	Title   string
 	Content string
@@ -14,22 +14,31 @@ type Vault struct {
 	Expires time.Time
 }
 
-// Define a VaultModel type which wraps a sql.DB connection pool
-type VaultModel struct {
+// Define clipModel type which wraps a sql.DB connection pool
+type ClipModel struct {
 	DB *sql.DB
 }
 
-// This will insert a new vault into the database
-func (m *VaultModel) Insert(title string, content string, expires int) (int, error) {
-	return 0, nil
+// This will insert a new clip into the database
+func (m *ClipModel) Insert(title string, content string, expires int) (int, error) {
+	var id int
+	stmt := `INSERT INTO vaults (title, content, created, expires)
+	VALUES($1, $2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + INTERVAL '1 day' * $3) RETURNING id`
+
+	err := m.DB.QueryRow(stmt, title, content, expires).Scan(&id)
+
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
 }
 
-// This will return a specific vault based on its id
-func (m *VaultModel) Get(id int) (*Vault, error) {
+// This will return a specific clips based on its id
+func (m *ClipModel) Get(id int) (*Clip, error) {
 	return nil, nil
 }
 
-// This will return the 10 most recent created vaults
-func (m *VaultModel) Latest() ([]*Vault, error) {
+// This will return the 10 most recent created clips
+func (m *ClipModel) Latest() ([]*Clip, error) {
 	return nil, nil
 }
