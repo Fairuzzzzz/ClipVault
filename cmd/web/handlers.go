@@ -1,10 +1,14 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-	"html/template"
+
+	// "html/template"
 	"net/http"
 	"strconv"
+
+	"github.com/Fairuzzzzz/clipvault/internal/models"
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -13,22 +17,30 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	files := []string{
-		"./ui/html/base.html",
-		"./ui/html/pages/home.html",
-		"./ui/html/partials/nav.html",
-	}
-
-	ts, err := template.ParseFiles(files...)
+	clips, err := app.clips.Latest()
 	if err != nil {
 		app.serverError(w, err)
 		return
 	}
 
-	err = ts.ExecuteTemplate(w, "base", nil)
-	if err != nil {
-		app.serverError(w, err)
+	for _, clip := range clips {
+		fmt.Fprintf(w, "%+v\n", clip)
 	}
+
+	// files := []string{
+	// "./ui/html/base.tmpl",
+	// "./ui/html/partials/nav.tmpl",
+	// "./ui/html/pages/home.tmpl",
+	// }
+	// ts, err := template.ParseFiles(files...)
+	// if err != nil {
+	// app.serverError(w, err)
+	// return
+	// }
+	// err = ts.ExecuteTemplate(w, "base", nil)
+	// if err != nil {
+	// app.serverError(w, err)
+	// }
 }
 
 func (app *application) clipView(w http.ResponseWriter, r *http.Request) {
@@ -37,7 +49,17 @@ func (app *application) clipView(w http.ResponseWriter, r *http.Request) {
 		app.notFound(w)
 		return
 	}
-	fmt.Fprintf(w, "Display a specific clip with ID %d...", id)
+
+	clip, err := app.clips.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+	fmt.Fprintf(w, "%+v", clip)
 }
 
 func (app *application) clipCreate(w http.ResponseWriter, r *http.Request) {
