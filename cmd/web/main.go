@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"flag"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -12,16 +13,21 @@ import (
 )
 
 type application struct {
-	errorLog *log.Logger
-	infoLog  *log.Logger
-	clips    *models.ClipModel
+	errorLog      *log.Logger
+	infoLog       *log.Logger
+	clips         *models.ClipModel
+	templateCache map[string]*template.Template
 }
 
 func main() {
 	// Command-line flag
 	addr := flag.String("addr", ":4000", "HTTP network address")
 
-	dsn := flag.String("dsn", "host=localhost user=web2 password=testweb dbname=clipvault sslmode=disable", "PostgreSQL data source name")
+	dsn := flag.String(
+		"dsn",
+		"host=localhost user=web2 password=testweb dbname=clipvault sslmode=disable",
+		"PostgreSQL data source name",
+	)
 
 	flag.Parse()
 
@@ -38,11 +44,17 @@ func main() {
 
 	defer db.Close()
 
+	templateCache, err := newTemplateCache()
+	if err != nil {
+		errorLog.Fatal(err)
+	}
+
 	// Initialize instance of application struct, containing the dependencies
 	app := &application{
-		errorLog: errorLog,
-		infoLog:  infoLog,
-		clips:    &models.ClipModel{DB: db},
+		errorLog:      errorLog,
+		infoLog:       infoLog,
+		clips:         &models.ClipModel{DB: db},
+		templateCache: templateCache,
 	}
 
 	// Initialize a http.Server struct

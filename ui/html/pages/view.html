@@ -1,13 +1,13 @@
-{{define "title"}}Clip #{{.Clip.ID}}{{end}} {{define "main"}}
+{{define "title"}}Clip #{{.Clip.ID}}{{end}} {{define "main"}} {{with .Clip}}
 <div class="clip">
   <div class="metadata">
-    <strong>{{.Clip.Title}}</strong>
-    <span>{{.Clip.ID}}</span>
+    <strong>{{.Title}}</strong>
+    <span>{{.ID}}</span>
   </div>
-  <pre><code>{{.Clip.Content}}</code></pre>
+  <pre><code>{{.Content}}</code></pre>
   <div class="metadata">
-    <time>Created: {{.Clip.Created}}</time>
-    <time>Expires: {{.Clip.Expires}}</time>
+    <time>Created: {{.Created}}</time>
+    <time>Expires: {{.Expires}}</time>
   </div>
 </div>
-{{end}}
+{{end}} {{end}}
