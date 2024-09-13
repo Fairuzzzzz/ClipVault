@@ -3,8 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-
-	// "html/template"
+	"html/template"
 	"net/http"
 	"strconv"
 
@@ -27,25 +26,27 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "%+v\n", clip)
 	}
 
-	// files := []string{
-	// "./ui/html/base.tmpl",
-	// "./ui/html/partials/nav.tmpl",
-	// "./ui/html/pages/home.tmpl",
-	// }
-	// ts, err := template.ParseFiles(files...)
-	// if err != nil {
-	// app.serverError(w, err)
-	// return
-	// }
-	// err = ts.ExecuteTemplate(w, "base", nil)
-	// if err != nil {
-	// app.serverError(w, err)
-	// }
+	//files := []string{
+	//	"./ui/html/base.html",
+	//	"./ui/html/partials/nav.html",
+	//	"./ui/html/pages/home.html",
+	//}
+
+	//ts, err := template.ParseFiles(files...)
+	//if err != nil {
+	//	app.serverError(w, err)
+	//	return
+	//}
+
+	//err = ts.ExecuteTemplate(w, "base", nil)
+	//if err != nil {
+	//	app.serverError(w, err)
+	//}
 }
 
 func (app *application) clipView(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
-	if err != nil {
+	if err != nil || id < 1 {
 		app.notFound(w)
 		return
 	}
@@ -59,7 +60,28 @@ func (app *application) clipView(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	fmt.Fprintf(w, "%+v", clip)
+
+	files := []string{
+		"./ui/html/base.html",
+		"./ui/html/partials/nav.html",
+		"./ui/html/pages/view.html",
+	}
+
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	// Create an instance of a templateData struct holding the clip data.
+	data := &templateData{
+		Clip: clip,
+	}
+
+	err = ts.ExecuteTemplate(w, "base", data)
+	if err != nil {
+		app.serverError(w, err)
+	}
 }
 
 func (app *application) clipCreate(w http.ResponseWriter, r *http.Request) {

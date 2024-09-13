@@ -1,0 +1,13 @@
+{{define "title"}}Clip #{{.Clip.ID}}{{end}} {{define "main"}}
+<div class="clip">
+  <div class="metadata">
+    <strong>{{.Clip.Title}}</strong>
+    <span>{{.Clip.ID}}</span>
+  </div>
+  <pre><code>{{.Clip.Content}}</code></pre>
+  <div class="metadata">
+    <time>Created: {{.Clip.Created}}</time>
+    <time>Expires: {{.Clip.Expires}}</time>
+  </div>
+</div>
+{{end}}
