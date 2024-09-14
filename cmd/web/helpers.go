@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 	"runtime/debug"
+	"time"
 )
 
 // The serverError helper writes an error message and stack trace to the errorLog
@@ -32,13 +34,21 @@ func (app *application) render(w http.ResponseWriter, status int, page string, d
 		return
 	}
 
-	// Write out the provided HTTP status code ('200 Ok', '400 Bad Request', etc)
-	w.WriteHeader(status)
+	buf := new(bytes.Buffer)
 
-	// Execute the template set and write the response body. If there is any error
-	// call the serverError() helper.
-	err := ts.ExecuteTemplate(w, "base", data)
+	err := ts.ExecuteTemplate(buf, "base", data)
 	if err != nil {
 		app.serverError(w, err)
+		return
+	}
+
+	w.WriteHeader(status)
+
+	buf.WriteTo(w)
+}
+
+func (app *application) newTemplateData(r *http.Request) *templateData {
+	return &templateData{
+		CurrentYear: time.Now().Year(),
 	}
 }

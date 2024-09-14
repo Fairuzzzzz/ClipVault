@@ -21,9 +21,10 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.render(w, http.StatusOK, "home.html", &templateData{
-		Clips: clips,
-	})
+	data := app.newTemplateData(r)
+	data.Clips = clips
+
+	app.render(w, http.StatusOK, "home.html", data)
 }
 
 func (app *application) clipView(w http.ResponseWriter, r *http.Request) {
@@ -43,9 +44,10 @@ func (app *application) clipView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.render(w, http.StatusOK, "view.html", &templateData{
-		Clip: clip,
-	})
+	data := app.newTemplateData(r)
+	data.Clip = clip
+
+	app.render(w, http.StatusOK, "view.html", data)
 }
 
 func (app *application) clipCreate(w http.ResponseWriter, r *http.Request) {
@@ -55,8 +57,8 @@ func (app *application) clipCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	title := "O snail"
-	content := "0 snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n- Kobayashi Issa"
+	title := "Test"
+	content := "Test"
 	expires := 7
 
 	id, err := app.clips.Insert(title, content, expires)
