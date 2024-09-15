@@ -13,6 +13,7 @@ type templateData struct {
 	CurrentYear int
 	Clip        *models.Clip
 	Clips       []*models.Clip
+	Form        any
 }
 
 func humanDate(t time.Time) string {
