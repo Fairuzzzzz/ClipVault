@@ -9,7 +9,7 @@
   </tr>
   {{range .Clips}}
   <tr>
-    <td><a href="/clip/view?id={{.ID}}">{{.Title}}</a></td>
+    <td><a href="/clip/view/{{.ID}}">{{.Title}}</a></td>
     <td>{{humanDate .Created}}</td>
     <td>#{{.ID}}</td>
   </tr>
