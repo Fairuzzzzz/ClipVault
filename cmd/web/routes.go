@@ -20,12 +20,13 @@ func (app *application) routes() http.Handler {
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	router.Handler(http.MethodGet, "/static/*filepath", http.StripPrefix("/static", fileServer))
 
-	router.HandlerFunc(http.MethodGet, "/", app.home)
-	router.HandlerFunc(http.MethodGet, "/clip/view/:id", app.clipView)
-	router.HandlerFunc(http.MethodGet, "/clip/create", app.clipCreate)
-	router.HandlerFunc(http.MethodPost, "/clip/create", app.clipCreatePost)
+	dynamic := alice.New(app.sessionManager.LoadAndSave)
+
+	router.Handler(http.MethodGet, "/", dynamic.ThenFunc(app.home))
+	router.Handler(http.MethodGet, "/clip/view/:id", dynamic.ThenFunc(app.clipView))
+	router.Handler(http.MethodGet, "/clip/create", dynamic.ThenFunc(app.clipCreate))
+	router.Handler(http.MethodPost, "/clip/create", dynamic.ThenFunc(app.clipCreatePost))
 
 	standard := alice.New(app.revocerPanic, app.logRequest, secureHeaders)
-
 	return standard.Then(router)
 }

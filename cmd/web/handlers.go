@@ -70,7 +70,7 @@ type clipCreateForm struct {
 func (app *application) clipCreatePost(w http.ResponseWriter, r *http.Request) {
 	var form clipCreateForm
 
-	err := app.formDecoder.Decode(&form, r.PostForm)
+	err := app.decodePostForm(r, &form)
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
 		return
@@ -101,5 +101,8 @@ func (app *application) clipCreatePost(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 		return
 	}
+
+	app.sessionManager.Put(r.Context(), "flash", "Clip successfully created!")
+
 	http.Redirect(w, r, fmt.Sprintf("/clip/view/%d", id), http.StatusSeeOther)
 }

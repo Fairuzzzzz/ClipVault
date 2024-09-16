@@ -14,6 +14,7 @@ type templateData struct {
 	Clip        *models.Clip
 	Clips       []*models.Clip
 	Form        any
+	Flash       string
 }
 
 func humanDate(t time.Time) string {

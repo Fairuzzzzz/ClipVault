@@ -7,18 +7,22 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/Fairuzzzzz/clipvault/internal/models"
+	"github.com/alexedwards/scs/postgresstore"
+	"github.com/alexedwards/scs/v2"
 	"github.com/go-playground/form/v4"
 	_ "github.com/lib/pq"
 )
 
 type application struct {
-	errorLog      *log.Logger
-	infoLog       *log.Logger
-	clips         *models.ClipModel
-	templateCache map[string]*template.Template
-	formDecoder   *form.Decoder
+	errorLog       *log.Logger
+	infoLog        *log.Logger
+	clips          *models.ClipModel
+	templateCache  map[string]*template.Template
+	formDecoder    *form.Decoder
+	sessionManager *scs.SessionManager
 }
 
 func main() {
@@ -54,13 +58,20 @@ func main() {
 	// Initialize a decoder instance
 	formDecoder := form.NewDecoder()
 
+	// Initialize a new session manager, then configure it to PostgreSQL database
+	// as the session store, and set a lifetime of 12 hour
+	sessionManager := scs.New()
+	sessionManager.Store = postgresstore.New(db)
+	sessionManager.Lifetime = 12 * time.Hour
+
 	// Initialize instance of application struct, containing the dependencies
 	app := &application{
-		errorLog:      errorLog,
-		infoLog:       infoLog,
-		clips:         &models.ClipModel{DB: db},
-		templateCache: templateCache,
-		formDecoder:   formDecoder,
+		errorLog:       errorLog,
+		infoLog:        infoLog,
+		clips:          &models.ClipModel{DB: db},
+		templateCache:  templateCache,
+		formDecoder:    formDecoder,
+		sessionManager: sessionManager,
 	}
 
 	// Initialize a http.Server struct
