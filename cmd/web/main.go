@@ -63,6 +63,7 @@ func main() {
 	sessionManager := scs.New()
 	sessionManager.Store = postgresstore.New(db)
 	sessionManager.Lifetime = 12 * time.Hour
+	sessionManager.Cookie.Secure = true
 
 	// Initialize instance of application struct, containing the dependencies
 	app := &application{
@@ -84,7 +85,7 @@ func main() {
 	// The value returned form flag.String() function is a pointer to the flag value
 	// not the value itself
 	infoLog.Printf("Starting server on %s", *addr) // Information message
-	err = srv.ListenAndServe()
+	err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
 	errorLog.Fatal(err) // Error message
 }
 
