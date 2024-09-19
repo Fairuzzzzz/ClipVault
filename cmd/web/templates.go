@@ -10,11 +10,13 @@ import (
 
 // Define templateData type to act as the holding structure for any dynamic data that want to pass to HTML templates.
 type templateData struct {
-	CurrentYear int
-	Clip        *models.Clip
-	Clips       []*models.Clip
-	Form        any
-	Flash       string
+	CurrentYear     int
+	Clip            *models.Clip
+	Clips           []*models.Clip
+	Form            any
+	Flash           string
+	IsAuthenticated bool
+	CSRFToken       string
 }
 
 func humanDate(t time.Time) string {

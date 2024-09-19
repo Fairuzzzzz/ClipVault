@@ -1,5 +1,6 @@
 {{define "title"}}Create a New Clip{{end}} {{define "main"}}
 <form action="/clip/create" method="post">
+  <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
   <div>
     <label>Title:</label>
     {{with .Form.FieldErrors.title}}

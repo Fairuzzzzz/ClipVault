@@ -34,6 +34,7 @@ func (v *Validator) AddFieldError(key, message string) {
 	}
 }
 
+// AddNonFieldError() helper for adding error messages to the new NonFieldErrors slice
 func (v *Validator) AddNonFieldError(message string) {
 	v.NonFieldErrors = append(v.NonFieldErrors, message)
 }
