@@ -73,3 +73,12 @@ func MinChars(value string, n int) bool {
 func Mathes(value string, rx *regexp.Regexp) bool {
 	return rx.MatchString(value)
 }
+
+func PermittedValue[T comparable](value T, permittedValue ...T) bool {
+	for i := range permittedValue {
+		if value == permittedValue[i] {
+			return true
+		}
+	}
+	return false
+}
