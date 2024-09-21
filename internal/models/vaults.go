@@ -6,6 +6,12 @@ import (
 	"time"
 )
 
+type ClipModelInterface interface {
+	Insert(title string, content string, expires int) (int, error)
+	Get(id int) (*Clip, error)
+	Latest() ([]*Clip, error)
+}
+
 // Define a Clip type to hold the data for an individual clip
 type Clip struct {
 	ID      int

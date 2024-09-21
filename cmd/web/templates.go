@@ -2,12 +2,10 @@ package main
 
 import (
 	"html/template"
-	"io/fs"
 	"path/filepath"
 	"time"
 
 	"github.com/Fairuzzzzz/clipvault/internal/models"
-	"github.com/Fairuzzzzz/clipvault/ui"
 )
 
 // Define templateData type to act as the holding structure for any dynamic data that want to pass to HTML templates.
@@ -37,10 +35,7 @@ func newTemplateCache() (map[string]*template.Template, error) {
 	// Initialize a map to act as the cache.
 	cache := map[string]*template.Template{}
 
-	// Use fs.Glob() to get a slice of all filepaths in the ui.Files embedded
-	// filesystem which match the pattern 'html/pages/*.html'. This essentially
-	// gies a slice of all the 'page' templates for the application
-	pages, err := fs.Glob(ui.Files, "./ui/html/*.html")
+	pages, err := filepath.Glob("./ui/html/pages/*.html")
 	if err != nil {
 		return nil, err
 	}
@@ -52,20 +47,23 @@ func newTemplateCache() (map[string]*template.Template, error) {
 		// and assign it to the name variable
 		name := filepath.Base(page)
 
-		// A slice containing the filepath patterns for the templates want to parse
-		patters := []string{
-			"html/base.html",
-			"html/partials/*.html",
-			page,
-		}
-
-		// Use ParseFS() instead of ParseFiles() to parse the template files
-		// from the ui.Files embedded filesystem
-		ts, err := template.New(name).Funcs(functions).ParseFS(ui.Files, patters...)
+		// Parse the base template file into a template set
+		ts, err := template.New(name).Funcs(functions).ParseFiles("./ui/html/base.html")
 		if err != nil {
 			return nil, err
 		}
 
+		ts, err = ts.ParseGlob("./ui/html/partials/*.html")
+		if err != nil {
+			return nil, err
+		}
+
+		ts, err = ts.ParseFiles(page)
+		if err != nil {
+			return nil, err
+		}
+
+		// Add the template set to the map, using the name (like 'home.html') of the page as the key
 		cache[name] = ts
 	}
 	return cache, nil

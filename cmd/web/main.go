@@ -20,8 +20,8 @@ import (
 type application struct {
 	errorLog       *log.Logger
 	infoLog        *log.Logger
-	clips          *models.ClipModel
-	users          *models.UserModel
+	clips          models.ClipModelInterface
+	users          models.UserModelInterface
 	templateCache  map[string]*template.Template
 	formDecoder    *form.Decoder
 	sessionManager *scs.SessionManager
