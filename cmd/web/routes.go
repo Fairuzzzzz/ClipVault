@@ -27,6 +27,8 @@ func (app *application) routes() http.Handler {
 	router.Handler(http.MethodGet, "/", dynamic.ThenFunc(app.home))
 	router.Handler(http.MethodGet, "/clip/view/:id", dynamic.ThenFunc(app.clipView))
 
+	router.Handler(http.MethodGet, "/about", dynamic.ThenFunc(app.about))
+
 	router.Handler(http.MethodGet, "/user/signup", dynamic.ThenFunc(app.userSignup))
 	router.Handler(http.MethodPost, "/user/signup", dynamic.ThenFunc(app.userSignupPost))
 	router.Handler(http.MethodGet, "/user/login", dynamic.ThenFunc(app.userLogin))
