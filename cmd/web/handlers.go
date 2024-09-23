@@ -235,6 +235,12 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 	// Add the ID of the current user to the session, so they are now 'logged in'
 	app.sessionManager.Put(r.Context(), "authenticatedUserID", id)
 
+	path := app.sessionManager.PopString(r.Context(), "redirectPathAfterLogin")
+
+	if path == "" {
+		http.Redirect(w, r, path, http.StatusSeeOther)
+		return
+	}
 	// Redirect the user to the create clip page
 	http.Redirect(w, r, "/clip/create", http.StatusSeeOther)
 }
