@@ -18,6 +18,7 @@ import (
 )
 
 type application struct {
+	debug          bool
 	errorLog       *log.Logger
 	infoLog        *log.Logger
 	clips          models.ClipModelInterface
@@ -36,6 +37,8 @@ func main() {
 		"host=localhost user=web2 password=testweb dbname=clipvault sslmode=disable",
 		"PostgreSQL data source name",
 	)
+
+	debug := flag.Bool("debug", false, "display debug output")
 
 	flag.Parse()
 
@@ -69,6 +72,7 @@ func main() {
 
 	// Initialize instance of application struct, containing the dependencies
 	app := &application{
+		debug:          *debug,
 		errorLog:       errorLog,
 		infoLog:        infoLog,
 		clips:          &models.ClipModel{DB: db},

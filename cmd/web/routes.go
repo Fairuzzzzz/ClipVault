@@ -40,6 +40,7 @@ func (app *application) routes() http.Handler {
 
 	router.Handler(http.MethodGet, "/clip/create", protected.ThenFunc(app.clipCreate))
 	router.Handler(http.MethodPost, "/clip/create", protected.ThenFunc(app.clipCreatePost))
+	router.Handler(http.MethodGet, "/account/view", protected.ThenFunc(app.accountView))
 	router.Handler(http.MethodPost, "/user/logout", protected.ThenFunc(app.userLogoutPost))
 
 	standard := alice.New(app.revocerPanic, app.logRequest, secureHeaders)
