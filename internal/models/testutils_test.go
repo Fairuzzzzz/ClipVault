@@ -10,7 +10,7 @@ func newTestDB(t *testing.T) *sql.DB {
 	// Establish a sql.DB connection pool for test database.
 	db, err := sql.Open(
 		"postgres",
-		"host=localhot user=testing_web password=testing_web dbname=test_clipvault sslmode=disable",
+		"host=localhot port=5433 user=testing_web password=testing_web dbname=test_clipvault sslmode=disable",
 	)
 	if err != nil {
 		t.Fatal(err)

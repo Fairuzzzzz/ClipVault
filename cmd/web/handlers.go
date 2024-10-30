@@ -237,7 +237,7 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 
 	path := app.sessionManager.PopString(r.Context(), "redirectPathAfterLogin")
 
-	if path == "" {
+	if path != "" {
 		http.Redirect(w, r, path, http.StatusSeeOther)
 		return
 	}

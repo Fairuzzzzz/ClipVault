@@ -34,7 +34,7 @@ func main() {
 
 	dsn := flag.String(
 		"dsn",
-		"host=localhost user=web2 password=testweb dbname=clipvault sslmode=disable",
+		"host=localhost port=5432 user=admin password=root dbname=clipvault sslmode=disable",
 		"PostgreSQL data source name",
 	)
 
@@ -68,7 +68,7 @@ func main() {
 	sessionManager := scs.New()
 	sessionManager.Store = postgresstore.New(db)
 	sessionManager.Lifetime = 12 * time.Hour
-	sessionManager.Cookie.Secure = true
+	//sessionManager.Cookie.Secure = true
 
 	// Initialize instance of application struct, containing the dependencies
 	app := &application{
@@ -100,7 +100,8 @@ func main() {
 	// The value returned form flag.String() function is a pointer to the flag value
 	// not the value itself
 	infoLog.Printf("Starting server on %s", *addr) // Information message
-	err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
+	//err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
+	err = srv.ListenAndServe()
 	errorLog.Fatal(err) // Error message
 }
 
@@ -113,5 +114,6 @@ func openDB(dsn string) (*sql.DB, error) {
 	if err = db.Ping(); err != nil {
 		return nil, err
 	}
+
 	return db, nil
 }

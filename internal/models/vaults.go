@@ -29,7 +29,7 @@ type ClipModel struct {
 // This will insert a new clip into the database
 func (m *ClipModel) Insert(title string, content string, expires int) (int, error) {
 	var id int
-	stmt := `INSERT INTO vaults (title, content, created, expires)
+	stmt := `INSERT INTO clips (title, content, created, expires)
 	VALUES($1, $2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + INTERVAL '1 day' * $3) RETURNING id`
 
 	err := m.DB.QueryRow(stmt, title, content, expires).Scan(&id)
@@ -42,7 +42,7 @@ func (m *ClipModel) Insert(title string, content string, expires int) (int, erro
 // This will return a specific clips based on its id
 func (m *ClipModel) Get(id int) (*Clip, error) {
 	stmt := `SELECT id, title, content, created, expires
-    FROM vaults
+    FROM clips
     WHERE expires > CURRENT_TIMESTAMP AT TIME ZONE 'UTC' AND id = $1`
 
 	row := m.DB.QueryRow(stmt, id)
@@ -63,7 +63,7 @@ func (m *ClipModel) Get(id int) (*Clip, error) {
 // This will return the 10 most recent created clips
 func (m *ClipModel) Latest() ([]*Clip, error) {
 	stmt := `SELECT id, title, content, created, expires
-    FROM vaults
+    FROM clips
     WHERE expires > NOW()
     ORDER BY id DESC
     LIMIT 10`
